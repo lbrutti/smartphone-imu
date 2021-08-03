@@ -1,10 +1,12 @@
 package de.lorenz_fenster.sensorstreamgps;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -37,6 +39,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.app.AlertDialog.Builder;
+
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.transport.udp.OSCPortOut;
+
 import de.lorenz_fenster.sensorstreamgps.R;
 
 public class PreferencesActivity extends Activity implements  OnItemSelectedListener{
@@ -71,7 +78,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
     private static final int CSV_ID_ROT_VEC			= 84;
     private static final int CSV_ID_PRE				= 85;
     private static final int CSV_ID_BAT_TEMP		= 86;
-    
+
+
+	public OSCPortOut sender = null;
     StringBuilder mStrBuilder = new StringBuilder(256);
     private String mSensordata;
     
@@ -408,8 +417,19 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        }
 		        else if(mUDP_Stream.isChecked())
 		        {
-		        		new UDPThread(mSensordata).send();
-		        }
+		        	//	new UDPThread(mSensordata).send();
+						Object args [] = new Object[1];
+						args[0] = mSensordata;
+						OSCMessage msg = new OSCMessage("/test_from_device", Arrays.asList(args));
+					try {
+						sender.send(msg);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (OSCSerializeException e) {
+						e.printStackTrace();
+					}
+					System.out.println("OSC message sent!");
+				}
 		        else if(mSD_Card_Stream.isChecked())
 		        {
 		        	if (SD_Card_Setup.getmBufferedwriter() != null)
@@ -821,6 +841,7 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
         try {
             port = Integer.parseInt(mPort.getText().toString());
             mPacket = new DatagramPacket(buf, buf.length, client_adress, port);
+            sender = new OSCPortOut(client_adress, port);
         } catch (Exception e) {
         	mSocket.close();
         	mSocket = null;

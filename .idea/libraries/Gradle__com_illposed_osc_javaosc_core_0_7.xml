@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.illposed.osc:javaosc-core:0.7">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.illposed.osc/javaosc-core/0.7/31877d1da28c96b1f56f0e1af73265f9de718821/javaosc-core-0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.illposed.osc/javaosc-core/0.7/cd5a9177df1eda124b04ba90d55bbb9dd580e8ec/javaosc-core-0.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.illposed.osc/javaosc-core/0.7/d0a29b1ed75ef0b82781c6a29456ec2619baedc6/javaosc-core-0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
