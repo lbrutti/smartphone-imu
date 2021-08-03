@@ -2,7 +2,6 @@ package de.lorenz_fenster.sensorstreamgps;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 public class UDPThread  {
 		
 		String msensordata;
