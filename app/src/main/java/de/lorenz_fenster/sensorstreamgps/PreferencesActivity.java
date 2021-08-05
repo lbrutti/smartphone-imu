@@ -6,8 +6,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.hardware.Sensor;
@@ -40,8 +43,11 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.app.AlertDialog.Builder;
 
+import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.transport.udp.OSCPortOut;
 
 import de.lorenz_fenster.sensorstreamgps.R;
@@ -160,7 +166,8 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 			//double x = event.values[0];
 	        //double y = event.values[1];
 	        //double z = event.values[2];
-					
+
+			List<OSCPacket> packets = new ArrayList<OSCPacket>();
 		       
 			switch (event.sensor.getType()) {
 			
@@ -172,6 +179,18 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            mAccBuffer[2] = event.values[2];
 		            mAccBufferReady = true;
 		            mAccTime = timestamp_sec;
+					List<Object> accX = new ArrayList<>();
+					List<Object> accY = new ArrayList<>();
+					List<Object> accZ = new ArrayList<>();
+					accX.add((float)(mAccBuffer[0]));
+					accY.add((float)(mAccBuffer[1]));
+					accZ.add((float)(mAccBuffer[2]));
+					OSCMessage msg1 = new OSCMessage("/accX", accX);
+					OSCMessage msg2 = new OSCMessage("/accY", accY);
+					OSCMessage msg3 = new OSCMessage("/accZ", accZ);
+					packets.add(msg1);
+					packets.add(msg2);
+					packets.add(msg3);
 		            break;
 		        case Sensor.TYPE_GYROSCOPE:
 		        	mGyroBuffer[0] = event.values[0];
@@ -179,6 +198,18 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        	mGyroBuffer[2] = event.values[2];
 		            mGyroBufferReady = true;
 		            mGyroTime = timestamp_sec;
+					List<Object> gyroX = new ArrayList<>();
+					List<Object> gyroY = new ArrayList<>();
+					List<Object> gyroZ = new ArrayList<>();
+					gyroX.add(mGyroBuffer[0]);
+					gyroY.add(mGyroBuffer[1]);
+					gyroZ.add(mGyroBuffer[2]);
+					OSCMessage gyro1 = new OSCMessage("/gyroX", gyroX);
+					OSCMessage gyro2 = new OSCMessage("/gyroY", gyroY);
+					OSCMessage gyro3 = new OSCMessage("/gyroZ", gyroZ);
+					packets.add(gyro1);
+					packets.add(gyro2);
+					packets.add(gyro3);
 		            break;
 		        case Sensor.TYPE_MAGNETIC_FIELD:
 		        	mMagBuffer[0] = event.values[0];
@@ -186,6 +217,18 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        	mMagBuffer[2] = event.values[2];
 		        	mMagBufferReady = true;
 		            mMagTime = timestamp_sec;
+					List<Object> magX = new ArrayList<>();
+					List<Object> magY = new ArrayList<>();
+					List<Object> magZ = new ArrayList<>();
+					magX.add(mMagBuffer[0]);
+					magY.add(mMagBuffer[1]);
+					magZ.add(mMagBuffer[2]);
+					OSCMessage mag1 = new OSCMessage("/magX", magX);
+					OSCMessage mag2 = new OSCMessage("/magY", magY);
+					OSCMessage mag3 = new OSCMessage("/magZ", magZ);
+					packets.add(mag1);
+					packets.add(mag2);
+					packets.add(mag3);
 		            break;
 		            
 		        case Sensor.TYPE_PRESSURE:
@@ -193,11 +236,23 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        	mPreBuffer = event.values[0];
 		        	mPreBufferReady = true;
 		            mPreTime = timestamp_sec;
-		            break;
+
+					List<Object> press = new ArrayList<>();
+
+					press.add(mPreBuffer);
+					OSCMessage pressMsg = new OSCMessage("/press", press);
+					packets.add(pressMsg);
+				    break;
 		            
 		        default:
 		            return;
 		        }
+			final OSCBundle bundle = new OSCBundle(packets);
+			try {
+				sender.send(bundle);
+			} catch (final Exception e) {
+				System.out.println("Couldn't send");
+			}
 
 			if (mAccBufferReady == false)
 			{
