@@ -201,9 +201,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					List<Object> gyroX = new ArrayList<>();
 					List<Object> gyroY = new ArrayList<>();
 					List<Object> gyroZ = new ArrayList<>();
-					gyroX.add(mGyroBuffer[0]);
-					gyroY.add(mGyroBuffer[1]);
-					gyroZ.add(mGyroBuffer[2]);
+					gyroX.add((float)mGyroBuffer[0]);
+					gyroY.add((float)mGyroBuffer[1]);
+					gyroZ.add((float)mGyroBuffer[2]);
 					OSCMessage gyro1 = new OSCMessage("/gyroX", gyroX);
 					OSCMessage gyro2 = new OSCMessage("/gyroY", gyroY);
 					OSCMessage gyro3 = new OSCMessage("/gyroZ", gyroZ);
@@ -220,9 +220,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					List<Object> magX = new ArrayList<>();
 					List<Object> magY = new ArrayList<>();
 					List<Object> magZ = new ArrayList<>();
-					magX.add(mMagBuffer[0]);
-					magY.add(mMagBuffer[1]);
-					magZ.add(mMagBuffer[2]);
+					magX.add((float)mMagBuffer[0]);
+					magY.add((float)mMagBuffer[1]);
+					magZ.add((float)mMagBuffer[2]);
 					OSCMessage mag1 = new OSCMessage("/magX", magX);
 					OSCMessage mag2 = new OSCMessage("/magY", magY);
 					OSCMessage mag3 = new OSCMessage("/magZ", magZ);
@@ -239,7 +239,7 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 
 					List<Object> press = new ArrayList<>();
 
-					press.add(mPreBuffer);
+					press.add((float)mPreBuffer);
 					OSCMessage pressMsg = new OSCMessage("/press", press);
 					packets.add(pressMsg);
 				    break;
@@ -247,6 +247,8 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        default:
 		            return;
 		        }
+			final Date newDate = new Date();
+
 			final OSCBundle bundle = new OSCBundle(packets);
 			try {
 				sender.send(bundle);
@@ -472,18 +474,18 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		        }
 		        else if(mUDP_Stream.isChecked())
 		        {
-		        	//	new UDPThread(mSensordata).send();
-						Object args [] = new Object[1];
-						args[0] = mSensordata;
-						OSCMessage msg = new OSCMessage("/test_from_device", Arrays.asList(args));
-					try {
-						sender.send(msg);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (OSCSerializeException e) {
-						e.printStackTrace();
-					}
-					System.out.println("OSC message sent!");
+		        		new UDPThread(mSensordata).send();
+//						Object args [] = new Object[1];
+//						args[0] = mSensordata;
+//						OSCMessage msg = new OSCMessage("/test_from_device", Arrays.asList(args));
+//					try {
+//						sender.send(msg);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					} catch (OSCSerializeException e) {
+//						e.printStackTrace();
+//					}
+//					System.out.println("OSC message sent!");
 				}
 		        else if(mSD_Card_Stream.isChecked())
 		        {
@@ -518,6 +520,7 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 			double timestamp_sec = event.timestamp * NS2S;
+			List<OSCPacket> packets = new ArrayList<OSCPacket>();
 
 			switch (event.sensor.getType())
 			{
@@ -529,6 +532,10 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            }
 		        	mOriBufferReady = true;
 		            mOriTime = timestamp_sec;
+					List<Object> ori = new ArrayList<>();
+					ori.add((float)(mAccBuffer[0]));
+					OSCMessage oriMsg = new OSCMessage("/ori", ori);
+					packets.add(oriMsg);
 		            break;
 		            
 				case Sensor.TYPE_LINEAR_ACCELERATION:
@@ -539,6 +546,19 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            }
 		        	mLin_Acc_BufferReady = true;
 		            mLin_Acc_Time = timestamp_sec;
+
+					List<Object> linAccX = new ArrayList<>();
+					List<Object> linAccY = new ArrayList<>();
+					List<Object> linAccZ = new ArrayList<>();
+					linAccX.add((float)(mLin_Acc_Buffer[0]));
+					linAccY.add((float)(mLin_Acc_Buffer[1]));
+					linAccZ.add((float)(mLin_Acc_Buffer[2]));
+					OSCMessage msg1 = new OSCMessage("/linAccX", linAccX);
+					OSCMessage msg2 = new OSCMessage("/linAccY", linAccY);
+					OSCMessage msg3 = new OSCMessage("/linAccZ", linAccZ);
+					packets.add(msg1);
+					packets.add(msg2);
+					packets.add(msg3);
 		            break;
 		            
 				case Sensor.TYPE_GRAVITY:
@@ -549,6 +569,19 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            }
 		        	mGraBufferReady = true;
 		            mGraTime = timestamp_sec;
+
+					List<Object> gravX = new ArrayList<>();
+					List<Object> gravY = new ArrayList<>();
+					List<Object> gravZ = new ArrayList<>();
+					gravX.add((float)mGyroBuffer[0]);
+					gravY.add((float)mGyroBuffer[1]);
+					gravZ.add((float)mGyroBuffer[2]);
+					OSCMessage grav1 = new OSCMessage("/gravX", gravX);
+					OSCMessage grav2 = new OSCMessage("/gravY", gravY);
+					OSCMessage grav3 = new OSCMessage("/gravZ", gravZ);
+					packets.add(grav1);
+					packets.add(grav2);
+					packets.add(grav3);
 		            break;
 		            
 				case Sensor.TYPE_ROTATION_VECTOR:
@@ -557,9 +590,29 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            {
 		            	mRot_Vec_Buffer[i]=event.values[i];
 		            }
+
+					List<Object> rotX = new ArrayList<>();
+					List<Object> rotY = new ArrayList<>();
+					List<Object> rotZ = new ArrayList<>();
+					rotX.add((float)mGyroBuffer[0]);
+					rotY.add((float)mGyroBuffer[1]);
+					rotZ.add((float)mGyroBuffer[2]);
+					OSCMessage rot1 = new OSCMessage("/rotX", rotX);
+					OSCMessage rot2 = new OSCMessage("/rotY", rotY);
+					OSCMessage rot3 = new OSCMessage("/rotZ", rotZ);
+					packets.add(rot1);
+					packets.add(rot2);
+					packets.add(rot3);
 		        	mRot_Vec_BufferReady = true;
 		            mRot_Vec_Time = timestamp_sec;
 		            break;
+			}
+
+			final OSCBundle bundle = new OSCBundle(packets);
+			try {
+				sender.send(bundle);
+			} catch (final Exception e) {
+				System.out.println("Couldn't send");
 			}
 			
 			
