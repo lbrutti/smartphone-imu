@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,6 +26,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,8 +145,8 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 	
 	private ProgressBar mProgessBar;
 	private TextView mSendingState;
-	
-	
+	private String android_id;
+
 
 	public class My_Hardware_SensorListener implements  SensorEventListener
 	{
@@ -185,9 +187,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					accX.add((float)(mAccBuffer[0]));
 					accY.add((float)(mAccBuffer[1]));
 					accZ.add((float)(mAccBuffer[2]));
-					OSCMessage msg1 = new OSCMessage("/accX", accX);
-					OSCMessage msg2 = new OSCMessage("/accY", accY);
-					OSCMessage msg3 = new OSCMessage("/accZ", accZ);
+					OSCMessage msg1 = new OSCMessage("/"+android_id+"/accX", accX);
+					OSCMessage msg2 = new OSCMessage("/"+android_id+"/accY", accY);
+					OSCMessage msg3 = new OSCMessage("/"+android_id+"/accZ", accZ);
 					packets.add(msg1);
 					packets.add(msg2);
 					packets.add(msg3);
@@ -204,9 +206,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					gyroX.add((float)mGyroBuffer[0]);
 					gyroY.add((float)mGyroBuffer[1]);
 					gyroZ.add((float)mGyroBuffer[2]);
-					OSCMessage gyro1 = new OSCMessage("/gyroX", gyroX);
-					OSCMessage gyro2 = new OSCMessage("/gyroY", gyroY);
-					OSCMessage gyro3 = new OSCMessage("/gyroZ", gyroZ);
+					OSCMessage gyro1 = new OSCMessage("/"+android_id+"/gyroX", gyroX);
+					OSCMessage gyro2 = new OSCMessage("/"+android_id+"/gyroY", gyroY);
+					OSCMessage gyro3 = new OSCMessage("/"+android_id+"/gyroZ", gyroZ);
 					packets.add(gyro1);
 					packets.add(gyro2);
 					packets.add(gyro3);
@@ -223,9 +225,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					magX.add((float)mMagBuffer[0]);
 					magY.add((float)mMagBuffer[1]);
 					magZ.add((float)mMagBuffer[2]);
-					OSCMessage mag1 = new OSCMessage("/magX", magX);
-					OSCMessage mag2 = new OSCMessage("/magY", magY);
-					OSCMessage mag3 = new OSCMessage("/magZ", magZ);
+					OSCMessage mag1 = new OSCMessage("/"+android_id+"/magX", magX);
+					OSCMessage mag2 = new OSCMessage("/"+android_id+"/magY", magY);
+					OSCMessage mag3 = new OSCMessage("/"+android_id+"/magZ", magZ);
 					packets.add(mag1);
 					packets.add(mag2);
 					packets.add(mag3);
@@ -240,7 +242,7 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					List<Object> press = new ArrayList<>();
 
 					press.add((float)mPreBuffer);
-					OSCMessage pressMsg = new OSCMessage("/press", press);
+					OSCMessage pressMsg = new OSCMessage("/"+android_id+"/press", press);
 					packets.add(pressMsg);
 				    break;
 		            
@@ -534,7 +536,7 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 		            mOriTime = timestamp_sec;
 					List<Object> ori = new ArrayList<>();
 					ori.add((float)(mAccBuffer[0]));
-					OSCMessage oriMsg = new OSCMessage("/ori", ori);
+					OSCMessage oriMsg = new OSCMessage("/"+android_id+"/ori", ori);
 					packets.add(oriMsg);
 		            break;
 		            
@@ -553,9 +555,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					linAccX.add((float)(mLin_Acc_Buffer[0]));
 					linAccY.add((float)(mLin_Acc_Buffer[1]));
 					linAccZ.add((float)(mLin_Acc_Buffer[2]));
-					OSCMessage msg1 = new OSCMessage("/linAccX", linAccX);
-					OSCMessage msg2 = new OSCMessage("/linAccY", linAccY);
-					OSCMessage msg3 = new OSCMessage("/linAccZ", linAccZ);
+					OSCMessage msg1 = new OSCMessage("/"+android_id+"/linAccX", linAccX);
+					OSCMessage msg2 = new OSCMessage("/"+android_id+"/linAccY", linAccY);
+					OSCMessage msg3 = new OSCMessage("/"+android_id+"/linAccZ", linAccZ);
 					packets.add(msg1);
 					packets.add(msg2);
 					packets.add(msg3);
@@ -576,9 +578,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					gravX.add((float)mGyroBuffer[0]);
 					gravY.add((float)mGyroBuffer[1]);
 					gravZ.add((float)mGyroBuffer[2]);
-					OSCMessage grav1 = new OSCMessage("/gravX", gravX);
-					OSCMessage grav2 = new OSCMessage("/gravY", gravY);
-					OSCMessage grav3 = new OSCMessage("/gravZ", gravZ);
+					OSCMessage grav1 = new OSCMessage("/"+android_id+"/gravX", gravX);
+					OSCMessage grav2 = new OSCMessage("/"+android_id+"/gravY", gravY);
+					OSCMessage grav3 = new OSCMessage("/"+android_id+"/gravZ", gravZ);
 					packets.add(grav1);
 					packets.add(grav2);
 					packets.add(grav3);
@@ -597,9 +599,9 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
 					rotX.add((float)mGyroBuffer[0]);
 					rotY.add((float)mGyroBuffer[1]);
 					rotZ.add((float)mGyroBuffer[2]);
-					OSCMessage rot1 = new OSCMessage("/rotX", rotX);
-					OSCMessage rot2 = new OSCMessage("/rotY", rotY);
-					OSCMessage rot3 = new OSCMessage("/rotZ", rotZ);
+					OSCMessage rot1 = new OSCMessage("/"+android_id+"/rotX", rotX);
+					OSCMessage rot2 = new OSCMessage("/"+android_id+"/rotY", rotY);
+					OSCMessage rot3 = new OSCMessage("/"+android_id+"/rotZ", rotZ);
 					packets.add(rot1);
 					packets.add(rot2);
 					packets.add(rot3);
@@ -664,7 +666,11 @@ public class PreferencesActivity extends Activity implements  OnItemSelectedList
     public void onCreate(Bundle savedInstanceState) 
 	{
 		//Log.d(MDEBUG_TAG, getLocalClassName()+ " .onCreate aufgerufen");
+
+		Context context = this;
         super.onCreate(savedInstanceState);
+		this.android_id = Settings.Secure.getString(context.getContentResolver(),
+				Settings.Secure.ANDROID_ID);
         setContentView(R.layout.preferences_layout);
         
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
