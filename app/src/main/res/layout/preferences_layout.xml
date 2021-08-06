@@ -6,7 +6,6 @@
 
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -83,24 +82,12 @@
 
 
             <RadioButton
-                android:id="@+id/UDP_SD_Stream"
-                android:layout_width="154dp"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/UDP_SD_Stream" />
-
-
-            <RadioButton
                 android:id="@+id/UDP_Stream"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="@string/UDP_Stream" />
 
-            <RadioButton
-                android:id="@+id/SD_Stream"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/SD_Stream" />
         </RadioGroup>
 
 
